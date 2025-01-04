@@ -45,7 +45,9 @@ void printBoardRaw(char board[7][6]){
 		}
 		cout << endl;
 	}
-	cout << " - - - - - - - " << "\n\n" << endl;
+	cout << " - - - - - - - " << endl;
+	cout << " 1 2 3 4 5 6 7 " << endl;
+	cout << "\n\n" << endl;
 }
 
 void printBoard(char board[7][6]){
@@ -59,7 +61,9 @@ void printBoard(char board[7][6]){
 		}
 		cout << endl;
 	}
-	cout << " =-=-=-=-=-=-= " << "\n\n" << endl;
+	cout << " =-=-=-=-=-=-= " << endl;
+	cout << " 1 2 3 4 5 6 7 " << endl;
+	cout << "\n\n" << endl;
 }
 
 void playPiece(char board[7][6], bool isComp, int col){
@@ -75,18 +79,70 @@ void playPiece(char board[7][6], bool isComp, int col){
 	//updateBoardSigns
 }
 
-void playerTurn(board[7][6]){
-	
+int getColInput(char board[7][6]){
+	int newCol = 0;
+	do {
+		do{
+			cout << "Please input the number of the column that you would like to play in: ";
+			cin >> newCol;
+			cout << endl;
+			newCol -= 1;
+			
+		// keep looping until the input is within the range of the board
+		} while (newCol < 0 || newCol >= 7);
+	// keep looping if the selected column was full
+	} while (findEmpty(board, newCol) == 6);
+		
+	return newCol;
 }
 
+bool playerTurn(char board[7][6]){
+	int newCol = getColInput(board);
+	playPiece(board, false, newCol);
+	printBoard(board);
+	
+	//return gotFour(board, newCol);
+	return true;
+}
+
+bool computerTurn(char board[7][6]){
+	int newCol = getColInput(board);
+	playPiece(board, true, newCol);
+	printBoard(board);
+	
+	//return gotFour(board, newCol);
+	return false;
+}
+
+void gameEnd(int turnCount){
+	if(turnCount % 2){
+		cout << "CONGRATULATIONS!!! YOU WIN!!!" << endl;
+	} else {
+		cout << "CONGRADULATE ME!!! AS I WON!!" << endl;
+	}
+}
 
 int main(){
+	//create the board
 	char board[7][6];
-	resetBoard(board);	
+	resetBoard(board);
+	
+	bool gameOver = false;
+	int turnCount = 0;
+	
 	printBoard(board);
-	printBoardRaw(board);
+
 	
-	playPiece(board, false, 3);
+	while(!gameOver){
+		gameOver = playerTurn(board);
+		turnCount++;
+		
+		if(!gameOver){
+			gameOver = computerTurn(board);
+			turnCount++;
+		
+		}
+	}
 	
-	printBoardRaw(board);
+	gameEnd(turnCount);
 }
